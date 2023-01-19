@@ -81,12 +81,13 @@ class _MainPage extends State<MainPage> {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
         onExitPress();
-
         return Future.value(false);
       },
       child: Scaffold(
@@ -175,9 +176,10 @@ class _MainPage extends State<MainPage> {
                             value: _bluetoothState.isEnabled,
                             onChanged: (value) {
                               future() async {
-                                if (value)
+                                if (value){
                                   await FlutterBluetoothSerial.instance
                                       .requestEnable();
+                                      print("enable");}
                                 else
                                   await FlutterBluetoothSerial.instance
                                       .requestDisable();

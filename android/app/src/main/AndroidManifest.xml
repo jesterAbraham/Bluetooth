@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.edufolly.flutterbluetoothserialexample">
+    package="com.dword.bluetooth_device_manager">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="flutter_bluetooth_serial_example"
+        android:label="Bluetooth Device Manager"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"

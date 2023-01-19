@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -18,13 +17,13 @@ class _BluetoothInfoState extends State<BluetoothInfo> {
 
   @override
   void initState() {
-    super.initState();
-
     // Get current state
     FlutterBluetoothSerial.instance.state.then((state) {
-      setState(() {
-        _bluetoothState = state;
-      });
+      if (mounted) {
+        setState(() {
+          _bluetoothState = state;
+        });
+      }
     });
 
     Future.doWhile(() async {
@@ -35,9 +34,11 @@ class _BluetoothInfoState extends State<BluetoothInfo> {
       return true;
     }).then((_) {
       FlutterBluetoothSerial.instance.address.then((address) {
-        setState(() {
-          _address = address!;
-        });
+        if (mounted) {
+          setState(() {
+            _address = address!;
+          });
+        }
       });
     });
 
@@ -47,13 +48,21 @@ class _BluetoothInfoState extends State<BluetoothInfo> {
       });
     });
 
-    FlutterBluetoothSerial.instance
-        .onStateChanged()
-        .listen((BluetoothState state) {
-      setState(() {
-        _bluetoothState = state;
-      });
-    });
+    // FlutterBluetoothSerial.instance
+    //     .onStateChanged()
+    //     .listen((BluetoothState state) {
+    //   if (mounted) {
+    //     setState(() {
+    //       _bluetoothState = state;
+    //     });
+    //   }
+    // });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

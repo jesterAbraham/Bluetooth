@@ -84,9 +84,17 @@ class _DiscoveryPage extends State<DiscoveryPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        centerTitle: true,
         backgroundColor: Color(0xff000000),
-        title: Text('List of devices'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('List of devices'),
+            Text(
+              "Device count ${results.length}",
+              style: TextStyle(fontSize: 13, color: Colors.grey),
+            ),
+          ],
+        ),
         actions: [
           isDiscovering
               ? FittedBox(
