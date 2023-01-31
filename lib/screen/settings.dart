@@ -1,11 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial_example/screen/privacyPolicy.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
+
+import 'package:flutter_bluetooth_serial_example/screen/privacyPolicy.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -228,7 +230,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  closeFunnction() async {
+  void closeFunnction() async {
     Timer(Duration(seconds: 2), () {
       CircularProgressIndicator();
     });
@@ -243,40 +245,43 @@ class BlurryDialog extends StatelessWidget {
   final VoidCallback continueCallBack;
   final String continueText;
 
-  BlurryDialog(
-      {required this.title,
-      required this.content,
-      required this.continueCallBack,
-      required this.continueText});
+  BlurryDialog({
+    Key? key,
+    required this.title,
+    required this.content,
+    required this.continueCallBack,
+    required this.continueText,
+  }) : super(key: key);
   TextStyle textStyle = TextStyle(color: Colors.black);
 
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-        child: AlertDialog(
-          title: new Text(
-            title,
-            style: textStyle,
+      filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+      child: AlertDialog(
+        title: new Text(
+          title,
+          style: textStyle,
+        ),
+        content: new Text(
+          content,
+          style: textStyle,
+        ),
+        actions: <Widget>[
+          new TextButton(
+            child: new Text(continueText),
+            onPressed: () {
+              continueCallBack();
+            },
           ),
-          content: new Text(
-            content,
-            style: textStyle,
+          new TextButton(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          actions: <Widget>[
-            new TextButton(
-              child: new Text(continueText),
-              onPressed: () {
-                continueCallBack();
-              },
-            ),
-            new TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ));
+        ],
+      ),
+    );
   }
 }

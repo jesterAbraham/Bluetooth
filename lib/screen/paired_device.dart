@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,22 @@ class _PairedPage extends State<PairedPage> {
     isDiscovering = widget.start;
     if (isDiscovering) {
       _startDiscovery();
+    }
+  }
+
+  Future<void> check() async {
+    if (isDiscovering) {
+      Fluttertoast.showToast(
+        msg: "Please wait for the discovery to finish",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 14.0,
+      );
+    } else {
+      _restartDiscovery();
     }
   }
 
@@ -118,7 +135,7 @@ class _PairedPage extends State<PairedPage> {
         ),
         child: RefreshIndicator(
           color: Color(0xff393939),
-          onRefresh: _restartDiscovery,
+          onRefresh: check,
           child: ListView.builder(
             itemCount: unPair.length,
             itemBuilder: (BuildContext context, index) {

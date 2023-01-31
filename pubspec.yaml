@@ -19,6 +19,7 @@ dependencies:
   in_app_review: ^2.0.6
   toast: ^0.3.0
   flutter_rating_bar: ^4.0.1
+  fluttertoast: ^8.1.2
   
   
 

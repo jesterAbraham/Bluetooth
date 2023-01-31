@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_bluetooth_serial_example/DiscoveryPage.dart';
 import 'package:flutter_bluetooth_serial_example/screen/bluetooth_info.dart';
+import 'package:flutter_bluetooth_serial_example/screen/debouncer.dart';
 import 'package:flutter_bluetooth_serial_example/screen/paired_device.dart';
 import 'package:flutter_bluetooth_serial_example/screen/settings.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -18,7 +19,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  int valueCount = 0;
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
+  final _debouncer = Debounce(milliseconds: 1 * 900);
 
   Timer? _discoverableTimeoutTimer;
 
@@ -66,22 +69,22 @@ class _MainPage extends State<MainPage> {
           content: Text("Do you want to exit from the app?"),
           actions: [
             TextButton(
-                onPressed: () {
-                  SystemNavigator.pop();
-                },
-                child: Text("Yes")),
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: Text("Yes"),
+            ),
             TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text("No")),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text("No"),
+            ),
           ],
         );
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class _MainPage extends State<MainPage> {
             ),
           ),
           child: Column(
-            children: <Widget>[
+            children: [
               SizedBox(height: 40),
               SizedBox(height: 30),
               Stack(
@@ -166,28 +169,65 @@ class _MainPage extends State<MainPage> {
                           Text(
                             "Bluetooth Status",
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w300),
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w300,
+                            ),
                           ),
                           Spacer(),
                           CupertinoSwitch(
                             activeColor: Color(0xffE9E242),
                             value: _bluetoothState.isEnabled,
                             onChanged: (value) {
-                              future() async {
-                                if (value){
-                                  await FlutterBluetoothSerial.instance
-                                      .requestEnable();
-                                      print("enable");}
-                                else
-                                  await FlutterBluetoothSerial.instance
-                                      .requestDisable();
-                              }
+                              if (value) {
+                                if (valueCount == 0) {
+                                  valueCount++;
+                                  future() async {
+                                    if (value) {
+                                      await FlutterBluetoothSerial.instance
+                                          .requestEnable();
+                                      print("enable");
+                                    } else
+                                      await FlutterBluetoothSerial.instance
+                                          .requestDisable();
+                                  }
 
-                              future().then((_) {
-                                setState(() {});
-                              });
+                                  future().then((_) {
+                                    setState(() {});
+                                  });
+                                } else {
+                                  _debouncer.run(() {
+                                    valueCount++;
+                                    future() async {
+                                      if (value) {
+                                        await FlutterBluetoothSerial.instance
+                                            .requestEnable();
+                                        print("enable");
+                                      } else
+                                        await FlutterBluetoothSerial.instance
+                                            .requestDisable();
+                                    }
+
+                                    future().then((_) {
+                                      setState(() {});
+                                    });
+                                  });
+                                }
+                              } else {
+                                future() async {
+                                  if (value) {
+                                    await FlutterBluetoothSerial.instance
+                                        .requestEnable();
+                                    print("enable");
+                                  } else
+                                    await FlutterBluetoothSerial.instance
+                                        .requestDisable();
+                                }
+
+                                future().then((_) {
+                                  setState(() {});
+                                });
+                              }
                             },
                           )
                         ],

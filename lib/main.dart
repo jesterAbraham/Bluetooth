@@ -5,10 +5,7 @@ import 'package:flutter_bluetooth_serial_example/screen/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
-    [
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ],
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   );
   runApp(ExampleApplication());
 }
